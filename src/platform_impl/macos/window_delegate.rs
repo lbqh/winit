@@ -24,7 +24,7 @@ use super::cursor::cursor_from_icon;
 use super::monitor::{self, flip_window_screen_coordinates, get_display_id};
 use super::observer::RunLoop;
 use super::view::WinitView;
-use super::window::WinitWindow;
+use super::window::{WinitWindow, WinitWindowState};
 use super::{ffi, Fullscreen, MonitorHandle, OsError, WindowId};
 use crate::dpi::{LogicalPosition, LogicalSize, PhysicalPosition, PhysicalSize, Position, Size};
 use crate::error::{ExternalError, NotSupportedError, OsError as RootOsError};
@@ -49,6 +49,8 @@ pub struct PlatformSpecificWindowAttributes {
     pub tabbing_identifier: Option<String>,
     pub option_as_alt: OptionAsAlt,
     pub borderless_game: bool,
+    pub can_become_main_window: bool,
+    pub can_become_key_window: bool,
 }
 
 impl Default for PlatformSpecificWindowAttributes {
@@ -67,6 +69,8 @@ impl Default for PlatformSpecificWindowAttributes {
             tabbing_identifier: None,
             option_as_alt: Default::default(),
             borderless_game: false,
+            can_become_main_window: true,
+            can_become_key_window: true,
         }
     }
 }
@@ -555,7 +559,10 @@ fn new_window(
 
         let window: Option<Retained<WinitWindow>> = unsafe {
             msg_send_id![
-                super(mtm.alloc().set_ivars(())),
+                super(mtm.alloc().set_ivars(WinitWindowState {
+                    can_become_main_window: attrs.platform_specific.can_become_main_window,
+                    can_become_key_window: attrs.platform_specific.can_become_key_window,
+                })),
                 initWithContentRect: frame,
                 styleMask: masks,
                 backing: NSBackingStoreType::NSBackingStoreBuffered,

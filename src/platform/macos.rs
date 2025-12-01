@@ -234,6 +234,10 @@ pub trait WindowAttributesExtMacOS {
     fn with_option_as_alt(self, option_as_alt: OptionAsAlt) -> Self;
     /// See [`WindowExtMacOS::set_borderless_game`] for details on what this means if set.
     fn with_borderless_game(self, borderless_game: bool) -> Self;
+
+    fn with_can_become_key_window(self, can_become_key_window: bool) -> Self;
+    fn with_can_become_main_window(self, can_become_main_window: bool) -> Self;
+
 }
 
 impl WindowAttributesExtMacOS for WindowAttributes {
@@ -306,6 +310,16 @@ impl WindowAttributesExtMacOS for WindowAttributes {
     #[inline]
     fn with_borderless_game(mut self, borderless_game: bool) -> Self {
         self.platform_specific.borderless_game = borderless_game;
+        self
+    }
+
+    fn with_can_become_key_window(mut self, can_become_key_window: bool) -> Self {
+        self.platform_specific.can_become_key_window = can_become_key_window;
+        self
+    }
+
+    fn with_can_become_main_window(mut self, can_become_main_window: bool) -> Self {
+        self.platform_specific.can_become_main_window = can_become_main_window;
         self
     }
 }

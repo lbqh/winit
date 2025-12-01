@@ -91,6 +91,11 @@ impl From<u64> for WindowId {
     }
 }
 
+pub struct WinitWindowState {
+    pub can_become_key_window: bool,
+    pub can_become_main_window: bool,
+}
+
 declare_class!(
     #[derive(Debug)]
     pub struct WinitWindow;
@@ -102,19 +107,21 @@ declare_class!(
         const NAME: &'static str = "WinitWindow";
     }
 
-    impl DeclaredClass for WinitWindow {}
+    impl DeclaredClass for WinitWindow {
+         type Ivars = WinitWindowState;
+    }
 
     unsafe impl WinitWindow {
         #[method(canBecomeMainWindow)]
         fn can_become_main_window(&self) -> bool {
             trace_scope!("canBecomeMainWindow");
-            true
+            self.ivars().can_become_main_window
         }
 
         #[method(canBecomeKeyWindow)]
         fn can_become_key_window(&self) -> bool {
             trace_scope!("canBecomeKeyWindow");
-            true
+            self.ivars().can_become_key_window
         }
     }
 );
