@@ -135,6 +135,10 @@ impl Inner {
 
     pub fn pre_present_notify(&self) {}
 
+    pub fn pointer_position(&self) -> Option<PhysicalPosition<i32>> {
+        None
+    }
+
     pub fn outer_position(&self) -> Result<PhysicalPosition<i32>, NotSupportedError> {
         Ok(self.canvas.borrow().position().to_physical(self.scale_factor()))
     }

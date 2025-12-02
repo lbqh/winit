@@ -679,6 +679,14 @@ impl Window {
 
 /// Position and size functions.
 impl Window {
+
+    /// Returns the position relative to the top-left hand corner of the window
+    pub fn pointer_position(&self) -> Option<PhysicalPosition<i32>> {
+        let _span = tracing::debug_span!("winit::Window::pointer_position",).entered();
+
+        self.window.maybe_wait_on_main(|w| w.pointer_position())
+    }
+
     /// Returns the position of the top-left hand corner of the window's client area relative to the
     /// top-left hand corner of the desktop.
     ///

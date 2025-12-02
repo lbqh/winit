@@ -155,6 +155,10 @@ impl Inner {
 
     pub fn pre_present_notify(&self) {}
 
+    pub fn pointer_position(&self) -> Option<PhysicalPosition<i32>> {
+        None
+    }
+
     pub fn inner_position(&self) -> Result<PhysicalPosition<i32>, NotSupportedError> {
         let safe_area = self.safe_area_screen_space();
         let position =

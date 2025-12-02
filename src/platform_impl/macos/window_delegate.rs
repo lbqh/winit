@@ -6,6 +6,8 @@ use std::ptr;
 use std::sync::{Arc, Mutex};
 
 use core_graphics::display::{CGDisplay, CGPoint};
+use core_graphics::event::CGEvent;
+use core_graphics::event_source::{CGEventSource, CGEventSourceStateID};
 use monitor::VideoModeHandle;
 use objc2::rc::{autoreleasepool, Retained};
 use objc2::runtime::{AnyObject, ProtocolObject};
@@ -913,6 +915,17 @@ impl WindowDelegate {
 
     #[inline]
     pub fn pre_present_notify(&self) {}
+
+    pub fn pointer_position(&self) -> Option<PhysicalPosition<i32>> {
+        let es = CGEventSource::new(CGEventSourceStateID::Private).ok()?;
+        let event = CGEvent::new(es).ok()?;
+        let position = event.location();
+
+        let content_rect = self.window().contentRectForFrameRect(self.window().frame());
+        let inner_pos = flip_window_screen_coordinates(content_rect);
+        
+        Some(LogicalPosition::new(position.x - inner_pos.x, position.y - inner_pos.y).to_physical(self.scale_factor()))
+    }
 
     pub fn outer_position(&self) -> Result<PhysicalPosition<i32>, NotSupportedError> {
         let position = flip_window_screen_coordinates(self.window().frame());

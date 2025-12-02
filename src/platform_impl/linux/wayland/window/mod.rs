@@ -248,6 +248,11 @@ impl Window {
     }
 
     #[inline]
+    pub fn pointer_position(&self) -> Option<PhysicalPosition<i32>> {
+        None
+    }
+
+    #[inline]
     pub fn outer_position(&self) -> Result<PhysicalPosition<i32>, NotSupportedError> {
         Err(NotSupportedError::new())
     }

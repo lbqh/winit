@@ -45,7 +45,7 @@ use windows_sys::Win32::UI::WindowsAndMessaging::{
 };
 
 use tracing::warn;
-
+use dpi::PhysicalPosition;
 use crate::cursor::Cursor;
 use crate::dpi::{PhysicalPosition, PhysicalSize, Position, Size};
 use crate::error::{ExternalError, NotSupportedError, OsError as RootOsError};
@@ -159,6 +159,25 @@ impl Window {
 
     #[inline]
     pub fn pre_present_notify(&self) {}
+
+    pub fn pointer_position(&self) -> Option<PhysicalPosition<i32>> {
+        let mut win_pos: POINT = unsafe { mem::zeroed() };
+        if unsafe { ClientToScreen(self.hwnd(), &mut win_pos) } == false.into() {
+            panic!(
+                "Unexpected ClientToScreen failure: please report this error to \
+                 rust-windowing/winit"
+            )
+        }
+        unsafe {
+            let mut point = POINT {
+                x: 0,
+                y: 0,
+            };
+
+            GetCursorPos(&mut point);
+            Some(PhysicalPosition::new(point.x - win_pos.x , point.y - win_pos.y))
+        }
+    }
 
     #[inline]
     pub fn outer_position(&self) -> Result<PhysicalPosition<i32>, NotSupportedError> {

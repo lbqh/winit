@@ -197,6 +197,10 @@ impl Window {
         // TODO?
     }
 
+    pub fn pointer_position(&self) -> Option<PhysicalPosition<i32>> {
+        None
+    }
+
     #[inline]
     pub fn inner_position(&self) -> Result<PhysicalPosition<i32>, error::NotSupportedError> {
         let mut buf: [u8; 4096] = [0; 4096];

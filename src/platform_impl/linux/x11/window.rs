@@ -1208,6 +1208,14 @@ impl UnownedWindow {
         }
     }
 
+    pub fn pointer_position(&self) -> Option<PhysicalPosition<i32>> {
+        let (pt_x, pt_y) = self.xconn.query_pointer(self.root, util::VIRTUAL_CORE_POINTER).ok().map(|ret| {
+            (xinput_fp1616_to_float(ret.win_x) as i32, xinput_fp1616_to_float(ret.win_y) as i32)
+        })?;
+        let (px, py) = self.inner_position_physical();
+        Some(PhysicalPosition::new(pt_x - px, pt_y - py))
+    }
+
     #[inline]
     pub fn outer_position(&self) -> Result<PhysicalPosition<i32>, NotSupportedError> {
         let extents = self.shared_state_lock().frame_extents.clone();

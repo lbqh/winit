@@ -822,6 +822,10 @@ impl Window {
 
     pub fn pre_present_notify(&self) {}
 
+    pub fn pointer_position(&self) -> Option<PhysicalPosition<i32>> {
+        None
+    }
+
     pub fn inner_position(&self) -> Result<PhysicalPosition<i32>, error::NotSupportedError> {
         Err(error::NotSupportedError::new())
     }
